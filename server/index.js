@@ -13,6 +13,7 @@ app.use(cors({
 
 app.use(express.json());
 
+// Basic check
 app.get("/", (req, res) => {
   res.send("Express + PostgreSQL Server Running");
 });
@@ -32,6 +33,34 @@ app.post("/api/validate", async (req, res) => {
 
   res.json({ correct });
 });
+
+
+// POST highscores
+app.post("/api/highscores", async (req, res) => {
+  const { name, time } = req.body;
+
+  try {
+    const score = await prisma.highScore.create({
+      data: { name, time: parseFloat(time) }
+    });
+
+    res.json(score);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to save score" });
+  }
+});
+
+// GET highscores
+app.get("/api/highscores", async (req, res) => {
+  const scores = await prisma.highScore.findMany({
+    orderBy: { time: "asc" },
+    take: 10,
+  });
+
+  res.json(scores);
+});
+
 
 // Start server
 app.listen(3000, () => {

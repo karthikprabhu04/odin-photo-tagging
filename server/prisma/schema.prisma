@@ -20,3 +20,10 @@ model Character {
   y         Float   
   tolerance Float   @default(5.0)
 }
+
+model HighScore {
+  id    Int    @id @default(autoincrement())
+  name  String
+  time  Float
+  date  DateTime @default(now())
+}

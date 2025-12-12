@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../styles/WaldoGame.css"
+import useTimer from "../hooks/userTimer";
+import NamePopup from "./NamePopup"
 
 export default function WaldoGame() {
   const imgRef = useRef(null);
@@ -11,8 +14,19 @@ export default function WaldoGame() {
   });
 
   const characters = ["Waldo", "Wenda", "Wizard", "Odlaw"];
-
   const [foundMarkers, setFoundMarkers] = useState([]);
+
+  // Integrate Timer
+  const { formattedTime, stop } = useTimer();
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    if (foundMarkers.length === 4) {
+      stop();
+      setShowPopup(true);
+    }
+  }, [foundMarkers]);
+
 
   // Hide target box when clicking outside
   useEffect(() => {
@@ -77,6 +91,7 @@ export default function WaldoGame() {
 
   return (
     <div className="game-container">
+      <div className="timer">Time: {formattedTime}s</div>
       <div className="image-wrapper" onClick={handleImageClick}>
         <img
           ref={imgRef}
@@ -119,6 +134,8 @@ export default function WaldoGame() {
           </div>
         ))}
       </div>
+      {showPopup && <NamePopup time={formattedTime} />}
+      <Link to="/leaderboard">View Leaderboard</Link>
     </div>
   );
 }
