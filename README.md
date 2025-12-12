@@ -1,1 +1,1 @@
-# odin-photo-tagging
+Photo tagging webapp
